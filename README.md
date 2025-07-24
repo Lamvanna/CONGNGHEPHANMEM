@@ -151,11 +151,41 @@ npm run build
 npm run start:prod
 ```
 
-### Docker (Optional)
+### 🐳 Docker Deployment
+
+#### Quick Start với Docker Compose
 ```bash
-docker build -t nafoodlvn-backend .
-docker run -p 3000:3000 nafoodlvn-backend
+# Production environment
+docker-compose up -d
+
+# Development environment với hot reload
+docker-compose -f docker-compose.dev.yml up -d
+
+# Seed dữ liệu mẫu
+docker-compose exec backend npm run docker:seed
+
+# Xem logs
+docker-compose logs -f backend
 ```
+
+#### Manual Docker Build
+```bash
+# Build image
+docker build -t nafoodlvn-backend .
+
+# Run container
+docker run -p 3000:3000 \
+  -e MONGODB_URI=mongodb://localhost:27017/nafood \
+  -e JWT_SECRET=your-secret \
+  nafoodlvn-backend
+```
+
+#### Docker Services
+- **Backend API:** http://localhost:3000
+- **MongoDB:** localhost:27017
+- **Redis:** localhost:6379
+
+Xem chi tiết trong file `DOCKER.md`
 
 ## 📝 API Documentation
 

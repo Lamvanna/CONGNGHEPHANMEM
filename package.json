@@ -11,8 +11,16 @@
     "start:prod": "node start-prod.js",
     "build": "esbuild server/index.js --platform=node --packages=external --bundle --format=esm --outdir=dist",
     "seed": "node scripts/seed-data.js",
+    "docker:seed": "node scripts/docker-seed.js",
     "create-test-orders": "node scripts/create-test-orders.js",
     "check-collections": "node scripts/check-collections.js",
+    "docker:build": "docker build -t nafoodlvn-backend .",
+    "docker:run": "docker run -p 3000:3000 nafoodlvn-backend",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:dev:down": "docker-compose -f docker-compose.dev.yml down",
+    "docker:logs": "docker-compose logs -f backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

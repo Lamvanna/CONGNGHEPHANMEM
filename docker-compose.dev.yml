@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # MongoDB Database for Development
+  mongodb:
+    image: mongo:7.0
+    container_name: nafood-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: nafood
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+      - ./scripts/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - nafood-dev-network
+
+  # Backend API for Development
+  backend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: nafood-backend-dev
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/nafood?authSource=admin
+      JWT_SECRET: dev-jwt-secret-key
+      SESSION_SECRET: dev-session-secret-key
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./public/uploads:/app/public/uploads
+    depends_on:
+      - mongodb
+    networks:
+      - nafood-dev-network
+    command: npm run dev
+
+  # Redis for Development
+  redis:
+    image: redis:7-alpine
+    container_name: nafood-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - nafood-dev-network
+
+volumes:
+  mongodb_dev_data:
+    driver: local
+
+networks:
+  nafood-dev-network:
+    driver: bridge
